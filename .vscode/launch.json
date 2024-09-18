@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Core API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/server/Core.Api/bin/Debug/net8.0/Core.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/server/Core.Api",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:80",
+                "DIALOGS_GRPC_URL": "http://localhost:8182"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/server/Views"
+            }
+        },
+        {
+            "name": "Dialogs API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/server/Dialogs.Api/bin/Debug/net8.0/Dialogs.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/server/Dialogs.Api",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:80;http://localhost:82"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/server/Dialogs.Api/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}

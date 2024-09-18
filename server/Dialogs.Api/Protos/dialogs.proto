@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option csharp_namespace = "Dialogs.Api.Grpc";
+
+package dialog;
+
+service DialogService {
+  rpc ListDialogs (ListDialogsRequest) returns (ListDialogsResponse);
+  rpc ListMessages (ListMessagesRequest) returns (ListMessagesResponse);
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+}
+
+message ListDialogsRequest {
+  string user_id = 1;
+}
+
+message ListDialogsResponse {
+  repeated AgentResponse agents = 1;
+}
+
+message ListMessagesRequest {
+  string user_id = 1;
+  string agent_id = 2;
+}
+
+message ListMessagesResponse {
+  repeated DialogMessageResponse messages = 1;
+}
+
+message SendMessageRequest {
+  string sender_id = 1;
+  string receiver_id = 2;
+  string text = 3;
+}
+
+message SendMessageResponse {
+  DialogMessageResponse message = 1;
+}
+
+message AgentResponse {
+  string agent_id = 1;
+}
+
+message DialogMessageResponse {
+  string id = 1;
+  string text = 2;
+  string sender_id = 3;
+  string receiver_id = 4;
+  bool is_read = 5;
+  string timestamp = 6;
+}
