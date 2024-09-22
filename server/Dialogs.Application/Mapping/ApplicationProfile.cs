@@ -8,7 +8,7 @@ public class ApplicationProfile : Profile
 {
     public ApplicationProfile()
     {
-        CreateMap<Dialog, AgentDTO>();
+        CreateMap<Dialog, DialogDTO>();
         CreateMap<DialogMessage, DialogMessageDTO>();
     }
 }

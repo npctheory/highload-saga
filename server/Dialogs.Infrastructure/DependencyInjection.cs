@@ -34,8 +34,9 @@ public static class DependencyInjection
 
         services.AddScoped<IDialogRepository>(sp =>
         {
-            var redis = sp.GetRequiredService<IConnectionMultiplexer>();
-            return new RedisDialogRepository(redis, databaseIndex: 1);
+            var connectionString = configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+            var mapper = sp.GetRequiredService<IMapper>();
+            return new PostgresDialogRepository(connectionString, mapper);
         });
 
         return services;

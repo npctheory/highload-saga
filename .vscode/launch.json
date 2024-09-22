@@ -12,8 +12,8 @@
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "http://localhost:80",
-                "DIALOGS_GRPC_URL": "http://localhost:8182"
+                "ASPNETCORE_URLS": "http://localhost:84",
+                "DIALOGS_GRPC_URL": "http://localhost:82"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/server/Views"

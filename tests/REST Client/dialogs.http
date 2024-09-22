@@ -1,31 +1,31 @@
-@host=localhost:8080
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJMYWR5R2FnYSIsImdpdmVuX25hbWUiOiJMYWR5IiwiZmFtaWx5X25hbWUiOiJHYWdhIiwianRpIjoiMDU4OGJlZjYtMjg1Mi00ZmJiLWFlNjctYzZhYjZhN2JmOWQ3IiwiZXhwIjoyMDQxNjQ0NDg0LCJpc3MiOiJIaWdobG9hZFNvY2lhbCIsImF1ZCI6IkhpZ2hsb2FkU29jaWFsIn0.tSDnI7hU4xDTRm-oJG9ygytjK8XlixYmKXNfgmIpLLU
-
+@core_host=localhost:84
+@dialogs_host=localhost:80
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJqdGkiOiI1NjgzZTAyNS04MWJkLTRjODMtODNkMy1mOTUyMzk0MmE1N2YiLCJleHAiOjIwNDIzMzQzOTksImlzcyI6IkhpZ2hsb2FkU29jaWFsIiwiYXVkIjoiSGlnaGxvYWRTb2NpYWwifQ.i2CnhTDvw_l8KPyNQNfqJZ_d40OvoGqpiO8dRrFRJOY
 ### Login
-POST http://{{host}}/login
+POST http://{{core_host}}/login
 Content-Type: application/json
 
 {
-  "id": "LadyGaga",
+  "id": "Admin",
   "password": "password"
 }
 
 
 ### SendMessage
-POST http://{{host}}/dialog/User/send
+POST http://{{dialogs_host}}/dialog/LadyGaga/send
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "text": "Sup User"
+  "text": "Sup Lady Gaga 1 2 3 4"
 }
 
 ### ListDialogs
-GET http://{{host}}/dialog/list
+GET http://{{dialogs_host}}/dialog/list
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### ListMessages
-GET http://{{host}}/dialog/User/list
+GET http://{{dialogs_host}}/dialog/User/list
 Content-Type: application/json
 Authorization: Bearer {{token}}

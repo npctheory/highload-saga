@@ -10,7 +10,7 @@ using Dialogs.Domain.Interfaces;
 
 namespace Dialogs.Application.Dialogs.Queries.ListDialogs;
 
-public class ListDialogsQueryHandler : IRequestHandler<ListDialogsQuery, List<AgentDTO>>
+public class ListDialogsQueryHandler : IRequestHandler<ListDialogsQuery, List<DialogDTO>>
 {
     private readonly IDialogRepository _dialogRepository;
     private readonly IMapper _mapper;
@@ -21,9 +21,9 @@ public class ListDialogsQueryHandler : IRequestHandler<ListDialogsQuery, List<Ag
         _mapper = mapper;
     }
 
-    public async Task<List<AgentDTO>> Handle(ListDialogsQuery request, CancellationToken cancellationToken)
+    public async Task<List<DialogDTO>> Handle(ListDialogsQuery request, CancellationToken cancellationToken)
     {
         List<Dialog> agents = await _dialogRepository.ListDialogs(request.userId);
-        return _mapper.Map<List<AgentDTO>>(agents);
+        return _mapper.Map<List<DialogDTO>>(agents);
     }
 }

@@ -24,19 +24,19 @@ services:
       - highload_net
  
  
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - highload_net
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: pgadmin
+  #   restart: unless-stopped
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+  #   networks:
+  #     - highload_net
 
   redis:
     image: redis:latest
@@ -60,62 +60,53 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
 
-  core:
-    build:
-      context: ./server
-      dockerfile: ./Core.Api/Dockerfile
-    image: core:local
-    container_name: core
-    restart: unless-stopped
-    environment:
-      PRIMARY_DB_HOST: pg_master
-      PRIMARY_DB_PORT: 5432
-      PRIMARY_DB_NAME: highloadsocial
-      PRIMARY_DB_USER: postgres
-      PRIMARY_DB_PASSWORD: postgres
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: "http://*:80"
-      DIALOGS_GRPC_URL: "http://dialogs:82"
-    depends_on:
-      pg_master:
-        condition: service_healthy
-    networks:
-      - highload_net
-    ports:
-      - "8080:80"
+  # core:
+  #   build:
+  #     context: ./server
+  #     dockerfile: ./Core.Api/Dockerfile
+  #   image: core:local
+  #   container_name: core
+  #   restart: unless-stopped
+  #   environment:
+  #     PRIMARY_DB_HOST: pg_master
+  #     PRIMARY_DB_PORT: 5432
+  #     PRIMARY_DB_NAME: highloadsocial
+  #     PRIMARY_DB_USER: postgres
+  #     PRIMARY_DB_PASSWORD: postgres
+  #     ASPNETCORE_ENVIRONMENT: Production
+  #     ASPNETCORE_URLS: "http://*:80"
+  #     DIALOGS_GRPC_URL: "http://dialogs:82"
+  #   depends_on:
+  #     pg_master:
+  #       condition: service_healthy
+  #   networks:
+  #     - highload_net
+  #   ports:
+  #     - "8080:80"
 
-  dialogs:
-    build:
-      context: ./server
-      dockerfile: ./Dialogs.Api/Dockerfile
-    image: dialogs:local
-    container_name: dialogs
-    restart: unless-stopped
-    environment:
-      primary_db_host: pg_master
-      primary_db_port: 5432
-      primary_db_name: highloadsocial
-      primary_db_user: postgres
-      primary_db_password: postgres
-      aspnetcore_environment: Production
-    depends_on:
-      pg_master:
-        condition: service_healthy
-    networks:
-      - highload_net
-    ports:
-      - "8180:80"
-      - "8182:82"
+  # dialogs:
+  #   build:
+  #     context: ./server
+  #     dockerfile: ./Dialogs.Api/Dockerfile
+  #   image: dialogs:local
+  #   container_name: dialogs
+  #   restart: unless-stopped
+  #   environment:
+  #     primary_db_host: pg_master
+  #     primary_db_port: 5432
+  #     primary_db_name: highloadsocial
+  #     primary_db_user: postgres
+  #     primary_db_password: postgres
+  #     aspnetcore_environment: Production
+  #   depends_on:
+  #     pg_master:
+  #       condition: service_healthy
+  #   networks:
+  #     - highload_net
+  #   ports:
+  #     - "8180:80"
+  #     - "8182:82"
       
-  redisinsight:
-    image: redis/redisinsight:latest
-    container_name: redisinsight
-    restart: unless-stopped
-    ports:
-      - "5540:5540"
-    networks:
-      - highload_net
-
 volumes:
   pg_master:
   pgadmin_data:
