@@ -42,6 +42,22 @@ public class DialogMessageSaga : MassTransitStateMachine<DialogMessageSagaData>
             .TransitionTo(Idle)
         );
 
+        During(Idle,
+            When(MessageSent)
+            .Then(context => 
+            {
+                context.Saga.UserId = context.Message.ReceiverId;
+                context.Saga.AgentId = context.Message.SenderId;
+                _logger.LogInformation("Сообщение получено. Начат подсчет сообщений.");
+            })
+            .TransitionTo(Counting)
+            .Then(context => 
+            {
+                context.Saga.UnreadMessageCount++;
+            })
+            .TransitionTo(Idle)
+        );
+
         During(Counting,
             When(MessagesRead)
             .Then(context => 
