@@ -5,22 +5,27 @@ using MediatR;
 using Dialogs.Application.Dialogs.DTO;
 using Dialogs.Domain.Entities;
 using Dialogs.Domain.Interfaces;
+using EventBus;
+using EventBus.Events;
+using Dialogs.Domain.Aggregates;
 
 
 namespace Dialogs.Application.Dialogs.Commands.SendMessage;
 
-public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, DialogMessageDTO>
+public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, DialogDTO>
 {
     private readonly IDialogRepository _dialogRepository;
     private readonly IMapper _mapper;
+    private readonly IEventBus _eventBus;
 
-    public SendMessageCommandHandler(IDialogRepository dialogRepository, IMapper mapper)
+    public SendMessageCommandHandler(IDialogRepository dialogRepository, IMapper mapper, IEventBus eventBus)
     {
         _dialogRepository = dialogRepository;
         _mapper = mapper;
+        _eventBus = eventBus;
     }
 
-    public async Task<DialogMessageDTO> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+    public async Task<DialogDTO> Handle(SendMessageCommand request, CancellationToken cancellationToken)
     {
         if(request.ReceiverId == request.SenderId)
         {
@@ -33,7 +38,17 @@ public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Dia
             Text = request.Text
         };
 
-        DialogMessage message_sent = await _dialogRepository.SendMessage(message);
-        return _mapper.Map<DialogMessageDTO>(message_sent);
+        Dialog receiver_dialog = await _dialogRepository.SendMessage(message);
+
+        MessageSentEvent messageSentEvent = new MessageSentEvent{
+            CorrelationId = receiver_dialog.Id,
+            ReceiverId = receiver_dialog.UserId,
+            SenderId = receiver_dialog.AgentId
+        };
+
+
+
+        await _eventBus.PublishAsync(messageSentEvent);
+        return _mapper.Map<DialogDTO>(receiver_dialog);
     }
 }

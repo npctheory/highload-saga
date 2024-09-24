@@ -21,11 +21,23 @@ public class PostgresDialogRepository : IDialogRepository
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<DialogMessage> SendMessage(DialogMessage message)
+    public async Task<Dialog> SendMessage(DialogMessage message)
     {
         const string sql = @"
             INSERT INTO dialog_messages (id, sender_id, receiver_id, text, is_read, timestamp)
-            VALUES (@Id, @SenderId, @ReceiverId, @Text, @IsRead, @Timestamp)";
+            VALUES (@Id, @SenderId, @ReceiverId, @Text, @IsRead, @Timestamp);
+
+            INSERT INTO dialogs (user_id, agent_id, message_count)
+            VALUES (@ReceiverId, @SenderId, 0)
+            ON CONFLICT (user_id, agent_id) DO NOTHING;
+
+            INSERT INTO dialogs (user_id, agent_id, message_count)
+            VALUES (@SenderId, @ReceiverId, 0)
+            ON CONFLICT (user_id, agent_id) DO NOTHING;
+
+            SELECT *
+            FROM dialogs
+            WHERE user_id = @ReceiverId AND agent_id = @SenderId;";
 
         using (var connection = new NpgsqlConnection(_connectionString))
         {
@@ -39,11 +51,24 @@ public class PostgresDialogRepository : IDialogRepository
                 command.Parameters.AddWithValue("@IsRead", message.IsRead);
                 command.Parameters.AddWithValue("@Timestamp", message.Timestamp);
 
-                await command.ExecuteNonQueryAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        // Map the selected row to a Dialog object
+                        return new Dialog
+                        {
+                            Id = reader.GetGuid(0),
+                            UserId = reader.GetString(1),
+                            AgentId = reader.GetString(2),
+                            MessageCount = reader.GetInt32(3)
+                        };
+                    }
+                }
             }
         }
 
-        return message;
+        return null; // Handle the case when no dialog is found
     }
 
     public async Task<List<DialogMessage>> ListMessages(string userId, string agentId)

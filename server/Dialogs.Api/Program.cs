@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Dialogs.Api;
 using Dialogs.Infrastructure;
 using Dialogs.Application;
-using Dialogs.Api.Grpc;
 using MediatR;
 using Dialogs.Api.Behavior;
 using Dialogs.Api.Middleware;
@@ -20,8 +19,6 @@ builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestLoggingBe
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
-builder.Services.AddGrpc();
-builder.Services.AddGrpcReflection();
 
 var app = builder.Build();
 app.UseMiddleware<RequestIdMiddleware>();
@@ -32,6 +29,4 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-app.MapGrpcService<DialogServiceImpl>();
-app.MapGrpcReflectionService();
 app.Run();

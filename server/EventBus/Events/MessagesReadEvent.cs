@@ -1,6 +1,6 @@
-namespace EventBus.Events;
+namespace EventBus;
 
-public class MessageSentEvent
+public class MessagesReadEvent
 {
     public Guid CorrelationId { get; set; }
     public string SenderId { get; set; }

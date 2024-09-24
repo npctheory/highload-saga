@@ -6,6 +6,14 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Dialogs.Infrastructure.Services;
 using Dialogs.Infrastructure.Configuration;
+using Dialogs.Infrastructure.SagaStates;
+using Microsoft.EntityFrameworkCore;
+using Dialogs.Infrastructure;
+using Dialogs.Api.Sagas;
+using System.Reflection;
+using Marten;
+using Dialogs.Api.Consumers;
+using Dialogs.Infrastructure.DbContexts;
 
 namespace Dialogs.Api;
 public static class DependencyInjection
@@ -38,9 +46,24 @@ public static class DependencyInjection
             };
         });
 
+        services.AddMarten(options =>
+        {
+            var connectionString = configuration.GetSection("DatabaseSettings:ConnectionString").Value;
+            options.Connection(connectionString);
+            options.Schema.For<DialogMessageSagaData>();
+        });
+
         services.AddMassTransit(busConfigurator =>
         {
-            busConfigurator.SetKebabCaseEndpointNameFormatter();
+            busConfigurator.AddSagaStateMachine<DialogMessageSaga, DialogMessageSagaData>()
+                .EntityFrameworkRepository(repository =>
+                {
+                    repository.ExistingDbContext<AppDbContext>();
+                    repository.UsePostgres();
+                });
+
+
+            busConfigurator.AddConsumer<MessageSentEventConsumer>();
 
 
             busConfigurator.UsingRabbitMq((context, rabbitMqConfigurator) =>
@@ -53,8 +76,9 @@ public static class DependencyInjection
                     h.Password(rabbitMqSettings["Password"]);
                 });
 
-
+                rabbitMqConfigurator.ConfigureEndpoints(context);
             });
+
         });
 
         services.AddTransient<IEventBus,RabbitMQEventBus>();

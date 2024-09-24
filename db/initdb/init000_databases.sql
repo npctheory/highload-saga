@@ -50,48 +50,9 @@ CREATE TABLE IF NOT EXISTS dialogs (
     agent_id text NOT NULL,
     message_count INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (agent_id) REFERENCES users(id)
+    FOREIGN KEY (agent_id) REFERENCES users(id),
+    UNIQUE (user_id, agent_id)
 );
-
-CREATE OR REPLACE FUNCTION insert_dialog_if_not_exists()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM dialogs
-        WHERE user_id = NEW.sender_id AND agent_id = NEW.receiver_id
-    ) THEN
-        INSERT INTO dialogs (user_id, agent_id, message_count)
-        VALUES (NEW.sender_id, NEW.receiver_id, 0);
-    END IF;
-
-    IF NOT EXISTS (
-        SELECT 1
-        FROM dialogs
-        WHERE user_id = NEW.receiver_id AND agent_id = NEW.sender_id
-    ) THEN
-        INSERT INTO dialogs (user_id, agent_id, message_count)
-        VALUES (NEW.receiver_id, NEW.sender_id, 0);
-    END IF;
-
-    UPDATE dialogs
-    SET message_count = message_count + 1
-    WHERE user_id = NEW.sender_id AND agent_id = NEW.receiver_id;
-
-    UPDATE dialogs
-    SET message_count = message_count + 1
-    WHERE user_id = NEW.receiver_id AND agent_id = NEW.sender_id;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE TRIGGER after_message_insert
-AFTER INSERT ON dialog_messages
-FOR EACH ROW
-EXECUTE FUNCTION insert_dialog_if_not_exists();
-
 
 
 \c postgres;
