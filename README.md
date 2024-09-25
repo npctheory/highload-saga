@@ -9,8 +9,8 @@
 Склонировать проект, сделать cd в корень репозитория и запустить Docker Compose.  
 Дождаться статуса healthy на контейнерах postgres.  
 ```bash
-https://github.com/npctheory/highload-microservices.git
-cd highload-microservices
+https://github.com/npctheory/highload-saga.git
+cd highload-saga
 docker compose up --build -d
 ```
 После запуска всех контейнеров добавить в базу таблицу с сагами
@@ -22,3 +22,12 @@ cd /app
 dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructure.csproj --startup-project Dialogs.Api/Dialogs.Api.csproj
 ```
 ### Оркестратор
+Счетчики непрочитанных сообщений обновляется через саги, которые создаются классом [DialogMessageSaga](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/Sagas/DialogMessageSaga.cs)  
+Сага вызывается ивентами, которые вызывает один из двух хэндлеров:  
+[SendMessageCommandHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Commands/SendMessage/SendMessageCommandHandler.cs)  
+[ListMessagesQueryHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Queries/ListMessages/ListMessagesQueryHandler.cs)  
+Счетчики хранятся в таблице dialogs.  
+Саги хранятся в таблице SagaData.  
+Пример работы саг:  
+
+
