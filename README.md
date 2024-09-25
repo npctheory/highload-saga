@@ -29,6 +29,5 @@ dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructur
 Счетчики хранятся в таблице dialogs.  
 Саги хранятся в таблице SagaData.  
 Пример работы:  
+
 [saga.webm](https://github.com/user-attachments/assets/50e48c09-6f80-4acf-a01a-907630f5ed12)
-
-
