@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dialogs.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240924172002_Initial")]
+    [Migration("20240925165326_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -38,9 +38,6 @@ namespace Dialogs.Infrastructure.Migrations
                     b.Property<string>("CurrentState")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("UnreadMessageCount")
-                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()

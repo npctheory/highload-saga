@@ -1,9 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
+
+RUN dotnet tool install --global dotnet-ef
+
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 WORKDIR ./Dialogs.Api
 RUN dotnet restore
 RUN dotnet publish Dialogs.Api.csproj -c Release -o /app/publish
+
+RUN dotnet ef database update --project ./Dialogs.Infrastructure/Dialogs.Infrastructure.csproj --startup-project ./Dialogs.Api/Dialogs.Api.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app

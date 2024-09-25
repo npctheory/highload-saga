@@ -14,6 +14,9 @@ using System.Reflection;
 using Marten;
 using Dialogs.Api.Consumers;
 using Dialogs.Infrastructure.DbContexts;
+using Dialogs.Application.Dialogs.Commands.UpdateUnreadMessageCount;
+using Dialogs.Application.Dialogs.Commands.MarkDialogMessagesAsRead;
+using Dialogs.Application.Dialogs.Commands.ResetUnreadMessageCount;
 
 namespace Dialogs.Api;
 public static class DependencyInjection
@@ -63,7 +66,9 @@ public static class DependencyInjection
                 });
 
 
-            busConfigurator.AddConsumer<MessageSentEventConsumer>();
+            busConfigurator.AddConsumer<UpdateUnreadMessageCountCommandHandler>();
+            busConfigurator.AddConsumer<MarkDialogMessagesAsReadCommandHandler>();
+            busConfigurator.AddConsumer<ResetUnreadMessageCountCommandHandler>();
 
 
             busConfigurator.UsingRabbitMq((context, rabbitMqConfigurator) =>
@@ -75,6 +80,8 @@ public static class DependencyInjection
                     h.Username(rabbitMqSettings["UserName"]);
                     h.Password(rabbitMqSettings["Password"]);
                 });
+
+                rabbitMqConfigurator.UseInMemoryOutbox();
 
                 rabbitMqConfigurator.ConfigureEndpoints(context);
             });

@@ -48,11 +48,39 @@ CREATE TABLE IF NOT EXISTS dialogs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id text NOT NULL,
     agent_id text NOT NULL,
-    message_count INT DEFAULT 0,
+    unread_message_count INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (agent_id) REFERENCES users(id),
     UNIQUE (user_id, agent_id)
 );
+
+CREATE TYPE dialogs_type AS (
+    id UUID,
+    user_id TEXT,
+    agent_id TEXT,
+    unread_message_count INT
+);
+
+CREATE OR REPLACE FUNCTION get_or_insert_dialog(p_user_id TEXT, p_agent_id TEXT)
+RETURNS dialogs_type AS $$
+DECLARE
+    dialog_record dialogs_type;
+BEGIN
+    INSERT INTO dialogs (user_id, agent_id)
+    VALUES (p_user_id, p_agent_id)
+    ON CONFLICT (user_id, agent_id) DO NOTHING
+    RETURNING id, user_id, agent_id, unread_message_count INTO dialog_record;
+
+    IF NOT FOUND THEN
+        SELECT id, user_id, agent_id, unread_message_count INTO dialog_record
+        FROM dialogs
+        WHERE user_id = p_user_id AND agent_id = p_agent_id;
+    END IF;
+
+    RETURN dialog_record;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 \c postgres;

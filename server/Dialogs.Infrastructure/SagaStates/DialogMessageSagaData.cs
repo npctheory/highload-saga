@@ -11,6 +11,4 @@ public class DialogMessageSagaData : SagaStateMachineInstance
     public string UserId { get; set; }
 
     public string AgentId { get; set; }
-
-    public int UnreadMessageCount { get; set; }
 }

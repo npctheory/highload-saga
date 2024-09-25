@@ -36,9 +36,6 @@ namespace Dialogs.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UnreadMessageCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");

@@ -12,7 +12,7 @@ using Dialogs.Domain.Aggregates;
 
 namespace Dialogs.Application.Dialogs.Commands.SendMessage;
 
-public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, DialogDTO>
+public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, DialogMessageDTO>
 {
     private readonly IDialogRepository _dialogRepository;
     private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Dia
         _eventBus = eventBus;
     }
 
-    public async Task<DialogDTO> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+    public async Task<DialogMessageDTO> Handle(SendMessageCommand request, CancellationToken cancellationToken)
     {
         if(request.ReceiverId == request.SenderId)
         {
@@ -38,17 +38,20 @@ public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Dia
             Text = request.Text
         };
 
-        Dialog receiver_dialog = await _dialogRepository.SendMessage(message);
+        DialogMessage sent_message = await _dialogRepository.SendMessage(message);
+        _dialogRepository.GetOrInsertDialog(sent_message.SenderId, sent_message.ReceiverId);
+
+        var dialogWithUnreadMessages = await _dialogRepository.GetOrInsertDialog(sent_message.ReceiverId, sent_message.SenderId);
+
 
         MessageSentEvent messageSentEvent = new MessageSentEvent{
-            CorrelationId = receiver_dialog.Id,
-            ReceiverId = receiver_dialog.UserId,
-            SenderId = receiver_dialog.AgentId
+            CorrelationId = dialogWithUnreadMessages.Id,
+            ReceiverId = dialogWithUnreadMessages.UserId,
+            SenderId = dialogWithUnreadMessages.AgentId
         };
 
-
-
-        await _eventBus.PublishAsync(messageSentEvent);
-        return _mapper.Map<DialogDTO>(receiver_dialog);
+        _eventBus.PublishAsync(messageSentEvent);
+        
+        return _mapper.Map<DialogMessageDTO>(sent_message);
     }
 }

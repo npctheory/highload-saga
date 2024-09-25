@@ -18,8 +18,7 @@ namespace Dialogs.Infrastructure.Migrations
                     CorrelationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CurrentState = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    AgentId = table.Column<string>(type: "text", nullable: false),
-                    UnreadMessageCount = table.Column<int>(type: "integer", nullable: false)
+                    AgentId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
