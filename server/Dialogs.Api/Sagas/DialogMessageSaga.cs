@@ -44,7 +44,18 @@ public class DialogMessageSaga : MassTransitStateMachine<DialogMessageSagaData>
                 _logger.LogInformation("Сообщение получено. Начат подсчет сообщений.");
             })
             .TransitionTo(CountingUnreadMessages)
-            .Publish(context => new UnreadMessageCountWentStaleEvent(context.Saga.CorrelationId, context.Saga.UserId, context.Saga.AgentId))
+            .Publish(context => new UnreadMessageCountWentStaleEvent(context.Saga.CorrelationId, context.Saga.UserId, context.Saga.AgentId)),
+
+
+            When(MessagesListed)
+            .Then(context => 
+            {
+                context.Saga.UserId = context.Message.UserId;
+                context.Saga.AgentId = context.Message.AgentId;
+                _logger.LogInformation("Сообщения запрошены. Начато обновление столбца is_read");
+            })
+            .TransitionTo(MarkingUnreadMessagesAsRead)
+            .Publish(context => new AllMessagesWereReadEvent(context.Saga.CorrelationId, context.Saga.UserId, context.Saga.AgentId))
         );
 
         During(Idle,
@@ -83,7 +94,7 @@ public class DialogMessageSaga : MassTransitStateMachine<DialogMessageSagaData>
         );
 
         During(MarkingUnreadMessagesAsRead,
-            When(MessagesListed)
+            When(UnreadMessageCountIsZero)
             .Then(context => 
             {
                 context.Saga.UserId = context.Message.UserId;

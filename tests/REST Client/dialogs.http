@@ -1,12 +1,12 @@
-@core_host=localhost:84
-@dialogs_host=localhost:80
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIiwiZ2l2ZW5fbmFtZSI6IlVzZXIiLCJmYW1pbHlfbmFtZSI6IlVzZXIiLCJqdGkiOiI5YTI2NTU0Mi05NGRiLTRmYjYtYWJiZi1lZjhhYWE4YzYxN2UiLCJleHAiOjIwNDI2NDI4NDEsImlzcyI6IkhpZ2hsb2FkU29jaWFsIiwiYXVkIjoiSGlnaGxvYWRTb2NpYWwifQ.Tfqlg9yPo7NCWWxIjVH1M64HB5K9GV0RWZWH_FQfESo
-### Login
+@core_host=localhost:8080
+@dialogs_host=localhost:8180
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJqdGkiOiI3OWJjOGJkMC0xOTVmLTQ4ODYtYTNkNy1iOWNhZjExZTFlY2IiLCJleHAiOjIwNDI2NjExMTEsImlzcyI6IkhpZ2hsb2FkU29jaWFsIiwiYXVkIjoiSGlnaGxvYWRTb2NpYWwifQ.ZIu9UVlsbxZoRXPcGctblduSdlLvmsoiFb37FQzUp_c
+
 POST http://{{core_host}}/login
 Content-Type: application/json
 
 {
-  "id": "User",
+  "id": "Admin",
   "password": "password"
 }
 
@@ -26,6 +26,6 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### ListMessages
-GET http://{{dialogs_host}}/dialog/AbilityIdea6200/list
+GET http://{{dialogs_host}}/dialog/User/list
 Content-Type: application/json
 Authorization: Bearer {{token}}

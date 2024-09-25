@@ -6,7 +6,7 @@ using MassTransit;
 
 namespace Dialogs.Application.Dialogs.Commands.ResetUnreadMessageCount;
 
-public class ResetUnreadMessageCountCommandHandler : IConsumer<UnreadMessageCountIsZeroEvent>
+public class ResetUnreadMessageCountCommandHandler : IConsumer<UnreadMessagesMarkedAsReadEvent>
 {
     private readonly IDialogRepository _dialogRepository;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class ResetUnreadMessageCountCommandHandler : IConsumer<UnreadMessageCoun
         _eventBus = eventBus;
     }
 
-    public async Task Consume(ConsumeContext<UnreadMessageCountIsZeroEvent> context)
+    public async Task Consume(ConsumeContext<UnreadMessagesMarkedAsReadEvent> context)
     {
         var notification = context.Message;
         await _dialogRepository.UpdateUnreadMessageCount(notification.CorrelationId, 0);
