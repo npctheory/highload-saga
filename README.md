@@ -26,6 +26,9 @@ dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructur
 Сага вызывается ивентами, которые вызывает один из двух хэндлеров:  
 [SendMessageCommandHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Commands/SendMessage/SendMessageCommandHandler.cs)  
 [ListMessagesQueryHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Queries/ListMessages/ListMessagesQueryHandler.cs)  
+### Отправка сообщения  
+Для отправки сообщения используется класс [SendMessageCommandHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Commands/SendMessage/SendMessageCommandHandler.cs). При успешном выполнении он производит событие MessageSent. Событие MessageSent переводит сагу в состояние CountingUnreadMessages, сага производит событие UnreadMessageCountWentStaleEvent на которое подписан класс [UpdateUnreadMessageCountCommandHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Commands/UpdateUnreadMessageCount/UpdateUnreadMessageCountCommandHandler.cs), который обращается к таблице сообщение, вычисляет новое количество непрочитанных и записывает новое количество в диалог в таблице dialogs. После этого производит событие UnreadMessageCountUpToDateEvent, которое переводит сагу в состояние Idle.
+
 Счетчики хранятся в таблице dialogs.  
 Саги хранятся в таблице SagaData.  
 Пример работы:  
