@@ -20,7 +20,7 @@ cd /app
 dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructure.csproj --startup-project Dialogs.Api/Dialogs.Api.csproj
 ```
 ### Оркестратор
-Счетчики непрочитанных сообщений обновляются через саги, которые создаются классом [DialogMessageSaga](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/Sagas/DialogMessageSaga.cs). Счетчики хранятся в таблице dialogs. За прочитанность/непрочитанность отдельного сообщения отвечает столбец is_read в таблице dialog_messages. Саги хранятся в таблице SagaData.  
+Счетчики непрочитанных сообщений обновляются через саги, которые создаются классом [DialogMessageSaga](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/Sagas/DialogMessageSaga.cs). Саги хранятся в таблице SagaData. Счетчики хранятся в таблице dialogs. За прочитанность/непрочитанность отдельного сообщения отвечает столбец is_read в таблице dialog_messages.  
 Конфигурация Masstransit в файле [highload-saga/server/Dialogs.Api/DependencyInjection.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/DependencyInjection.cs) 
   
 Сага вызывается ивентами, которые отправляет на шину один из классов:  
