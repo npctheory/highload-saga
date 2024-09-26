@@ -21,40 +21,8 @@ dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructur
 ```
 ### Оркестратор
 Счетчики непрочитанных сообщений обновляется через саги, которые создаются классом [DialogMessageSaga](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/Sagas/DialogMessageSaga.cs). Счетчики хранятся в таблице dialogs. За прочитанность/непрочитанность отдельного сообщения отвечает столбец is_read в таблице dialog_messages. Саги хранятся в таблице SagaData.  
-Конфигурация Masstransit в файле [highload-saga/server/Dialogs.Api/DependencyInjection.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/DependencyInjection.cs)  
-```csharp
-       services.AddMassTransit(busConfigurator =>
-        {
-            busConfigurator.AddSagaStateMachine<DialogMessageSaga, DialogMessageSagaData>()
-                .EntityFrameworkRepository(repository =>
-                {
-                    repository.ExistingDbContext<AppDbContext>();
-                    repository.UsePostgres();
-                });
-
-
-            busConfigurator.AddConsumer<UpdateUnreadMessageCountCommandHandler>();
-            busConfigurator.AddConsumer<MarkDialogMessagesAsReadCommandHandler>();
-            busConfigurator.AddConsumer<ResetUnreadMessageCountCommandHandler>();
-
-
-            busConfigurator.UsingRabbitMq((context, rabbitMqConfigurator) =>
-            {
-                var rabbitMqSettings = configuration.GetSection("RabbitMqSettings");
-
-                rabbitMqConfigurator.Host(rabbitMqSettings["HostName"], "/", h =>
-                {
-                    h.Username(rabbitMqSettings["UserName"]);
-                    h.Password(rabbitMqSettings["Password"]);
-                });
-
-                rabbitMqConfigurator.UseInMemoryOutbox();
-
-                rabbitMqConfigurator.ConfigureEndpoints(context);
-            });
-
-        });
-```
+Конфигурация Masstransit в файле [highload-saga/server/Dialogs.Api/DependencyInjection.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/DependencyInjection.cs) 
+  
 Сага вызывается ивентами, которые отправляет на шину один из классов:  
 [SendMessageCommandHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Commands/SendMessage/SendMessageCommandHandler.cs)  
 [ListMessagesQueryHandler.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Application/Dialogs/Queries/ListMessages/ListMessagesQueryHandler.cs)  
