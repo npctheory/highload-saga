@@ -16,9 +16,7 @@ docker compose up --build -d
 После запуска всех контейнеров добавить в базу таблицу с сагами
 ```bash
 docker exec -it dialogs bash
-
 cd /app
-
 dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructure.csproj --startup-project Dialogs.Api/Dialogs.Api.csproj
 ```
 ### Оркестратор
