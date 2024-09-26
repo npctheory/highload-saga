@@ -33,4 +33,5 @@ dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructur
 
 Пример работы:  
 
-[saga.webm](https://github.com/user-attachments/assets/50e48c09-6f80-4acf-a01a-907630f5ed12)
+[saga.webm](https://github.com/user-attachments/assets/e85889fc-7c27-48bb-9400-dc788f41f06d)
+
