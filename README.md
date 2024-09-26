@@ -9,7 +9,7 @@
 Склонировать проект, сделать cd в корень репозитория и запустить Docker Compose.  
 Дождаться статуса healthy на контейнерах postgres.  
 ```bash
-https://github.com/npctheory/highload-saga.git
+git clone https://github.com/npctheory/highload-saga.git
 cd highload-saga
 docker compose up --build -d
 ```
