@@ -21,7 +21,7 @@ dotnet ef database update --project Dialogs.Infrastructure/Dialogs.Infrastructur
 ```
 ### Оркестратор
 Счетчики непрочитанных сообщений обновляется через саги, которые создаются классом [DialogMessageSaga](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/Sagas/DialogMessageSaga.cs). Счетчики хранятся в таблице dialogs. За прочитанность/непрочитанность отдельного сообщения отвечает столбец is_read в таблице dialog_messages. Саги хранятся в таблице SagaData.  
-Конфигурация Masstransit в файле [highload-saga/server/Dialogs.Api/DependencyInjection.cs]([url](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/DependencyInjection.cs)  
+Конфигурация Masstransit в файле [highload-saga/server/Dialogs.Api/DependencyInjection.cs](https://github.com/npctheory/highload-saga/blob/main/server/Dialogs.Api/DependencyInjection.cs)  
 ```csharp
        services.AddMassTransit(busConfigurator =>
         {
